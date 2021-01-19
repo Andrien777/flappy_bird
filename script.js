@@ -25,6 +25,10 @@ let score = 0;
 let gap = 110;
 let started = false;
 let end = false;
+let pause = false;
+let debug = false;
+let level = 0;
+let diff = 100;
 
 function fly_up(){
 	bird_v += lift;
@@ -42,7 +46,13 @@ pipe[0] = {
 
 document.addEventListener("keydown", function(){
 	if(event.code === "Space"){
-		fly_up();
+		fly_up()
+		if(pause){
+			pause = false;
+		}
+	}
+	if(event.code === "Escape" && started){
+		pause = !pause;
 	}
 });
 
@@ -50,9 +60,10 @@ function draw(){
 	cont.drawImage(bg, 0, 0);
 	for(let i = 0; i < pipe.length; i++){
 		cont.drawImage(pipe_u, pipe[i].x, pipe[i].y);
+		gap = 110 - level * 10;
 		cont.drawImage(pipe_b, pipe[i].x, pipe[i].y + pipe_u.height + gap);
-		pipe[i].x--;
-		if(pipe[i].x === 125){
+		pipe[i].x -= level + 1;
+		if(pipe[i].x === diff){
 			pipe.push({
 				x: canvas.width,
 				y: Math.floor(Math.random() * pipe_u.height) - pipe_u.height
@@ -61,6 +72,15 @@ function draw(){
 		if(pipe[i].x === 5){
 			score++;
 			score_sound.play();
+			level = Math.floor(score / 10);
+			if(score % 10 === 0){
+				for(let i = diff; true; i++){
+					if((canvas.width - i) % level + 1 === 0){
+						diff = i;
+						break;
+					}
+				}
+			}
 		}
 	}
 	bird_v += grav;
@@ -68,11 +88,11 @@ function draw(){
 	if(bird_y < 0){
 		bird_y = 0;
 	}
-	if(bird_v < -7){
-		bird_v = -7;
+	if(bird_v < -1 * (level + 1) * 10){
+		bird_v = -1 * (level + 1) * 10;
 	}
-	if(bird_v > 12){
-		bird_v = 12;
+	if(bird_v > (level + 2) * 10){
+		bird_v = (level + 2) * 10;
 	}
 	bird_y += bird_v;
 	if(bird_y > canvas.height){
@@ -85,14 +105,19 @@ function draw(){
 	cont.drawImage(fg, 0, 400);
 	cont.fillStyle = "#000000";
 	cont.font = "24px Comic Sans MS";
-	cont.fillText("Счет: " + score, 10, canvas.height - 20);
-	if(collide()){
-		started = false;
-		end = true;
-		console.log("boom");
-		score = 0;
+	cont.fillText("Счет: " + score + "     Уровень: " + (level + 1), 10, canvas.height - 20);
+	if(!debug) {
+		if (collide()) {
+			started = false;
+			end = true;
+			console.log("boom");
+			score = 0;
+		}
 	}
-	if(started && !end) {
+	if(pause){
+		requestAnimationFrame(pause_draw);
+	}
+	else if(started && !end) {
 		requestAnimationFrame(draw);
 	}
 	else{
@@ -136,7 +161,8 @@ function end_draw(){
 	cont.drawImage(bird, 5, bird_y);
 	cont.drawImage(fg, 0, 400);
 	cont.fillStyle = "#000000";
-	if(started && !end) {
+	if(!end) {
+		started = false;
 		pipe.length = 0;
 		bird_y = canvas.height / 2;
 		bird_v = -5;
@@ -144,10 +170,32 @@ function end_draw(){
 			x: canvas.width,
 			y: Math.floor(Math.random() * pipe_u.height) - pipe_u.height
 		};
-		requestAnimationFrame(draw);
+		requestAnimationFrame(pre_draw);
 	}
 	else{
 		requestAnimationFrame(end_draw);
+	}
+}
+
+function pause_draw(){
+	cont.drawImage(bg, 0, 0);
+	for(let i = 0; i < pipe.length; i++){
+		cont.drawImage(pipe_u, pipe[i].x, pipe[i].y);
+		cont.drawImage(pipe_b, pipe[i].x, pipe[i].y + pipe_u.height + gap);
+	}
+	cont.drawImage(bird, 5, bird_y);
+	cont.drawImage(fg, 0, 400);
+	cont.fillStyle = "#000000";
+	cont.font = "24px Comic Sans MS";
+	cont.fillText("Счет: " + score, 10, canvas.height - 20);
+	cont.fillStyle = "#ffffff";
+	cont.font = "30px Comic Sans MS";
+	cont.fillText("ПАУЗА", canvas.width / 2 - 50, canvas.height / 2 - 30);
+	if(!pause && started) {
+		requestAnimationFrame(draw);
+	}
+	else{
+		requestAnimationFrame(pause_draw);
 	}
 }
 
