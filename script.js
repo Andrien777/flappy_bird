@@ -69,6 +69,9 @@ function draw(){
 				y: Math.floor(Math.random() * pipe_u.height) - pipe_u.height
 			});
 		}
+		if(pipe[i].x <= -1 * pipe[i].width){
+			pipe.splice(i, 1);
+		}
 		if(pipe[i].x === 5){
 			score++;
 			score_sound.play();
