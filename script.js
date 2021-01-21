@@ -48,7 +48,7 @@ pipe[0] = {
 
 document.addEventListener("keydown", function(){
 	if(event.code === "Space"){
-		fly_up()
+		fly_up();
 		if(pause){
 			pause = false;
 			pause_sound.play();
@@ -100,9 +100,6 @@ function draw(){
 	}
 	bird_v += grav;
 	bird_v += 0.3;
-	if(bird_y < 0){
-		bird_y = 0;
-	}
 	if(bird_v < -1 * (level + 1) * 10){
 		bird_v = -1 * (level + 1) * 10;
 	}
@@ -110,11 +107,8 @@ function draw(){
 		bird_v = (level + 2) * 10;
 	}
 	bird_y += bird_v;
-	if(bird_y > canvas.height){
+	if(bird_y > canvas.height) {
 		bird_y = canvas.height;
-	}
-	if(bird_y < 0){
-		bird_y = 0;
 	}
 	cont.drawImage(bird, 5, bird_y);
 	cont.drawImage(fg, 0, 400);
@@ -125,7 +119,6 @@ function draw(){
 		if (collide()) {
 			started = false;
 			end = true;
-			console.log("boom");
 			score = 0;
 		}
 	}
@@ -156,9 +149,6 @@ function pre_draw(){
 	cont.drawImage(bg, 0, 0);
 	cont.drawImage(bird, 5, bird_y);
 	cont.drawImage(fg, 0, 400);
-	cont.fillStyle = "#000000";
-	cont.font = "24px Comic Sans MS";
-	cont.fillText("Счет: " + score, 10, canvas.height - 20);
 	if(!started) {
 		requestAnimationFrame(pre_draw);
 	}
@@ -177,13 +167,12 @@ function end_draw(){
 	if(bird_y + bird.height - 3 < 400){
 		bird_v += grav;
 		bird_v += 0.3;
-		bird_y += bird_v
+		bird_y += bird_v;
 	}
 	if(bird_y + bird.height - 3 > 400){
 		bird_y = 403 - bird.height;
 	}
 	cont.drawImage(fg, 0, 400);
-	cont.fillStyle = "#000000";
 	if(!end) {
 		started = false;
 		pipe.length = 0;
@@ -210,7 +199,7 @@ function pause_draw(){
 	cont.drawImage(fg, 0, 400);
 	cont.fillStyle = "#000000";
 	cont.font = "24px Comic Sans MS";
-	cont.fillText("Счет: " + score, 10, canvas.height - 20);
+	cont.fillText("Счет: " + score + "     Уровень: " + (level + 1), 10, canvas.height - 20);
 	cont.fillStyle = "#ffffff";
 	cont.font = "30px Comic Sans MS";
 	cont.fillText("ПАУЗА", canvas.width / 2 - 50, canvas.height / 2 - 30);
