@@ -8,6 +8,7 @@ let pipe_u = new Image();
 let pipe_b = new Image();
 let flap = new Audio();
 let score_sound = new Audio();
+let pause_sound = new Audio();
 
 bird.src = "flappy_bird_bird.png";
 bg.src = "flappy_bird_bg.png";
@@ -16,6 +17,7 @@ pipe_u.src = "flappy_bird_pipeUp.png";
 pipe_b.src = "flappy_bird_pipeBottom.png";
 flap.src = "fly.mp3";
 score_sound.src = "score.mp3";
+pause_sound.src = "sfx-1.mp3";
 
 let bird_y = canvas.height / 2;
 let bird_v = -5;
@@ -49,10 +51,12 @@ document.addEventListener("keydown", function(){
 		fly_up()
 		if(pause){
 			pause = false;
+			pause_sound.play();
 		}
 	}
 	if(event.code === "Escape" && started){
 		pause = !pause;
+		pause_sound.play();
 	}
 });
 
@@ -60,6 +64,7 @@ document.onmousedown = function(){
 	fly_up()
 	if(pause){
 		pause = false;
+		pause_sound.play();
 	}
 }
 
