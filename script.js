@@ -174,6 +174,14 @@ function end_draw(){
 		cont.drawImage(pipe_b, pipe[i].x, pipe[i].y + pipe_u.height + gap);
 	}
 	cont.drawImage(bird, 5, bird_y);
+	if(bird_y + bird.height - 3 < 400){
+		bird_v += grav;
+		bird_v += 0.3;
+		bird_y += bird_v
+	}
+	if(bird_y + bird.height - 3 > 400){
+		bird_y = 403 - bird.height;
+	}
 	cont.drawImage(fg, 0, 400);
 	cont.fillStyle = "#000000";
 	if(!end) {
