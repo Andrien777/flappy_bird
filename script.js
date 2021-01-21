@@ -56,6 +56,13 @@ document.addEventListener("keydown", function(){
 	}
 });
 
+document.onmousedown = function(){
+	fly_up()
+	if(pause){
+		pause = false;
+	}
+}
+
 function draw(){
 	cont.drawImage(bg, 0, 0);
 	for(let i = 0; i < pipe.length; i++){
